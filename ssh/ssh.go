@@ -24,7 +24,7 @@ func ServerProc(sshHost string, sshUser string, sshPass string, command string) 
 	}
 	defer client.Close()
 
-	output, err := client.Exec("ps")
+	output, err := client.Exec(command)
 	if err != nil {
 		panic(err)
 	}

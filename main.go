@@ -16,19 +16,76 @@ type Welcome struct {
 */
 
 func main() {
-	var sshUser = os.Args[2]
-	var sshHost = os.Args[1]
-	var sshPass = os.Args[3]
+	sshUser := os.Args[2]
+	sshHost := os.Args[1]
+	sshPass := os.Args[3]
 
-	output := ssh.ServerProc(sshHost, sshUser, sshPass, "ps")
+	// routing, request, response
 
-	http.HandleFunc("/", HelloServer(http.ResponseWriter, *http.Request, output))
+	http.HandleFunc("/ps", func(w http.ResponseWriter, r *http.Request) {
+
+		var ps = ssh.ServerProc(sshHost, sshUser, sshPass, "ps")
+
+		fmt.Fprintf(w, "%s\n", "Ouput for ps command")
+		fmt.Fprintf(w, "%s", ps)
+		fmt.Fprintf(w, "%s", "Thank you")
+	})
+
+	http.HandleFunc("/uptime", func(w http.ResponseWriter, r *http.Request) {
+		var uptime = ssh.ServerProc(sshHost, sshUser, sshPass, "uptime")
+		fmt.Fprintf(w, "%s\n", "Ouput for uptime command")
+		fmt.Fprintf(w, "%s", uptime)
+		fmt.Fprintf(w, "%s", "Thank you")
+	})
+
+	http.HandleFunc("/df", func(w http.ResponseWriter, r *http.Request) {
+
+		var dfOutput = ssh.ServerProc(sshHost, sshUser, sshPass, "df -h")
+		fmt.Fprintf(w, "%s\n", "Ouput for df command")
+
+		fmt.Fprintf(w, "%s", dfOutput)
+		fmt.Fprintf(w, "%s", "Thank you")
+	})
+
+	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+
+		var output = ssh.ServerProc(sshHost, sshUser, sshPass, "ps")
+		var html = `<html>
+				<style>
+				h1 {
+					text-align: center;
+					font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+					color: #900C3F;
+				}
+				
+				p {
+					text-align: center;
+					color: #C70039;
+				}
+				
+				</style>
+				<body>
+					<div>
+						<h1>Hi, Welcome</h1>
+						<ul>
+					
+							<li><a href="/ps">Check the running Processes with PS</a></li>
+							<li><a href="/df">Check available disk sapace with DF</a></li>
+							<li><a href="/uptime">Run UPTIME</a></li>
+						</ul>
+
+
+					</div>
+					<div<%s</div>
+				</body>
+					</html>
+			`
+
+		fmt.Fprintf(w, html, output)
+
+	})
+	fmt.Println("listening")
 	http.ListenAndServe(":8080", nil)
-}
-
-func HelloServer(w http.ResponseWriter, r *http.Request, output string) {
-
-	fmt.Fprint(w, "%s", output)
 }
 
 // "My name is %s and I am %d years old", name, age
