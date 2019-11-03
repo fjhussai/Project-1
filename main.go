@@ -56,17 +56,32 @@ func main() {
 					text-align: center;
 					font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
 					color: #900C3F;
+					font-size: 70 px;
 				}
 				
+				h2 {
+					text-align: center;
+					font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+					color: #FFC300;
+					font-size: 50 px;
+				}
+
 				p {
 					text-align: center;
 					color: #C70039;
+				}
+
+				ul {
+					text-align: center;
+					list-style-type: circle;
+					color: #FF5733;
 				}
 				
 				</style>
 				<body>
 					<div>
-						<h1>Hi, Welcome</h1>
+						<h1>Hello There!</h1>
+						<h2>Let's check on your device!</h2>
 						<ul>
 					
 							<li><a href="/ps">Check the running Processes with PS</a></li>
